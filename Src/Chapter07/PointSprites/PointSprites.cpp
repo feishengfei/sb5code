@@ -125,7 +125,7 @@ void SetupRC(void)
     
 	glGenTextures(1, &starTexture);
 	glBindTexture(GL_TEXTURE_2D, starTexture);
-	LoadTGATexture("Star.tga", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE);
+	LoadTGATexture("star.tga", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE);
     }
 
 // Cleanup

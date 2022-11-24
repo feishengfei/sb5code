@@ -53,6 +53,7 @@ GLuint				renderBufferNames[3];
 
 SBObject            ninja;
 GLuint              ninjaTex[1];
+float rotate_speed;
 
 void MoveCamera(void);
 void DrawWorld(GLfloat yRot);
@@ -154,7 +155,7 @@ void SetupRC()
         GLT_ATTRIBUTE_TEXTURE0);
 #endif
 	gltMakeTorus(torusBatch, 0.4f, 0.15f, 35, 35);
-	gltMakeSphere(sphereBatch, 0.1f, 26, 13);
+	gltMakeSphere(sphereBatch, 2.f, 26, 13);
 
 	GLfloat alpha = 0.25f;
 	floorBatch.Begin(GL_TRIANGLE_FAN, 4, 1);
@@ -181,7 +182,7 @@ void SetupRC()
 
 	glGenTextures(1, textures);
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
-	LoadBMPTexture("marble.bmp", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_REPEAT);
+	LoadBMPTexture("Marble.bmp", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_REPEAT);
 
     glGenTextures(1, ninjaTex);
 	glBindTexture(GL_TEXTURE_2D, ninjaTex[0]);
@@ -219,6 +220,8 @@ void SetupRC()
 								GLT_ATTRIBUTE_VERTEX, "vVertex", 
 								GLT_ATTRIBUTE_NORMAL, "vNormal", 
 								GLT_ATTRIBUTE_TEXTURE0, "texCoord0");
+
+	// bind FragData before link
 	glBindFragDataLocation(processProg, 0, "oStraightColor");
 	glBindFragDataLocation(processProg, 1, "oGreyscale");
 	glBindFragDataLocation(processProg, 2, "oLumAdjColor"); 
@@ -236,8 +239,8 @@ void SetupRC()
 	fileData = LoadFloatData("LumTan.data", &count);
 	if (count > 0)
 	{
-		glBindBuffer(GL_TEXTURE_BUFFER_ARB, texBO[0]);
-		glBufferData(GL_TEXTURE_BUFFER_ARB, sizeof(float)*count, fileData, GL_STATIC_DRAW);
+		glBindBuffer(GL_TEXTURE_BUFFER, texBO[0]);
+		glBufferData(GL_TEXTURE_BUFFER, sizeof(float)*count, fileData, GL_STATIC_DRAW);
 		delete fileData;
 	}
 
@@ -245,8 +248,8 @@ void SetupRC()
 	fileData = LoadFloatData("LumSin.data", &count);
 	if (count > 0)
 	{
-		glBindBuffer(GL_TEXTURE_BUFFER_ARB, texBO[1]);
-		glBufferData(GL_TEXTURE_BUFFER_ARB, sizeof(float)*count, fileData, GL_STATIC_DRAW);
+		glBindBuffer(GL_TEXTURE_BUFFER, texBO[1]);
+		glBufferData(GL_TEXTURE_BUFFER, sizeof(float)*count, fileData, GL_STATIC_DRAW);
 		delete fileData;
 	}
 
@@ -254,20 +257,22 @@ void SetupRC()
 	fileData = LoadFloatData("LumLinear.data", &count);
 	if (count > 0)
 	{
-		glBindBuffer(GL_TEXTURE_BUFFER_ARB, texBO[2]);
-		glBufferData(GL_TEXTURE_BUFFER_ARB, sizeof(float)*count, fileData, GL_STATIC_DRAW);
+		glBindBuffer(GL_TEXTURE_BUFFER, texBO[2]);
+		glBufferData(GL_TEXTURE_BUFFER, sizeof(float)*count, fileData, GL_STATIC_DRAW);
 		delete fileData;
 	}
 
 	// Load the Tan ramp first
-	glBindBuffer(GL_TEXTURE_BUFFER_ARB, 0);
+	glBindBuffer(GL_TEXTURE_BUFFER, 0);
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_BUFFER_ARB, texBOTexture);
-	glTexBufferARB(GL_TEXTURE_BUFFER_ARB, GL_R32F, texBO[0]); 
+	glBindTexture(GL_TEXTURE_BUFFER, texBOTexture);
+	glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, texBO[0]); 
 	glActiveTexture(GL_TEXTURE0);
 
 	// Reset framebuffer binding
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+	rotate_speed = 1.f;
 
 	// Make sure all went well
 	gltCheckErrors();
@@ -287,6 +292,15 @@ void SpecialKeys(int key, int x, int y)
 
 	if(key == GLUT_KEY_UP)
 		cameraFrame.MoveForward(linear);
+
+    if(key == GLUT_KEY_PAGE_UP) {
+        rotate_speed += 0.1f;
+    }
+
+    if(key == GLUT_KEY_PAGE_DOWN && rotate_speed > 1.f) {
+        rotate_speed -= 0.1f;
+    }
+
 
 	if(key == GLUT_KEY_DOWN)
 		cameraFrame.MoveForward(-linear);
@@ -314,22 +328,22 @@ void SpecialKeys(int key, int x, int y)
 	if(key == GLUT_KEY_F3)
 	{
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_BUFFER_ARB, texBOTexture);
-		glTexBufferARB(GL_TEXTURE_BUFFER_ARB, GL_R32F, texBO[0]); // FIX THIS IN GLEE
+		glBindTexture(GL_TEXTURE_BUFFER, texBOTexture);
+		glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, texBO[0]); // FIX THIS IN GLEE
 		glActiveTexture(GL_TEXTURE0);
 	}
 	else if(key == GLUT_KEY_F4)
 	{
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_BUFFER_ARB, texBOTexture);
-		glTexBufferARB(GL_TEXTURE_BUFFER_ARB, GL_R32F, texBO[1]); // FIX THIS IN GLEE
+		glBindTexture(GL_TEXTURE_BUFFER, texBOTexture);
+		glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, texBO[1]); // FIX THIS IN GLEE
 		glActiveTexture(GL_TEXTURE0);
 	}
 	else if(key == GLUT_KEY_F5)
 	{
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_BUFFER_ARB, texBOTexture);
-		glTexBufferARB(GL_TEXTURE_BUFFER_ARB, GL_R32F, texBO[2]); // FIX THIS IN GLEE
+		glBindTexture(GL_TEXTURE_BUFFER, texBOTexture);
+		glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, texBO[2]); // FIX THIS IN GLEE
 		glActiveTexture(GL_TEXTURE0);
 	}
                         
@@ -349,7 +363,7 @@ void ShutdownRC(void)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_BUFFER_ARB, 0);
+	glBindTexture(GL_TEXTURE_BUFFER, 0);
 	glActiveTexture(GL_TEXTURE0);
 	
 	glDeleteTextures(1, &texBOTexture);
@@ -460,7 +474,9 @@ void DrawWorld(GLfloat yRot)
 		else
 			shaderManager.UseStockShader(GLT_SHADER_FLAT, transformPipeline.GetModelViewProjectionMatrix(), vWhite);
 
-		sphereBatch.Draw();
+	sphereBatch.Draw();
+    torusBatch.Draw();
+
 	modelViewMatrix.PopMatrix();
 
 	// Draw stuff relative to the camera
@@ -495,8 +511,7 @@ void DrawWorld(GLfloat yRot)
 void RenderScene(void)
 {
 	static CStopWatch animationTimer;
-	float yRot = animationTimer.GetElapsedSeconds() * 60.0f;
-//	MoveCamera();
+	float yRot = animationTimer.GetElapsedSeconds() * rotate_speed * 60.0f;
 
 	modelViewMatrix.PushMatrix();	
 		M3DMatrix44f mCamera;
@@ -585,7 +600,7 @@ int main(int argc, char* argv[])
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(screenWidth,screenHeight);
   
-    glutCreateWindow("FBO Drawbuffers");
+    glutCreateWindow("FBO Drawbuffers, Press F2 F3/F4/F5");
  
     glutReshapeFunc(ChangeSize);
     glutDisplayFunc(RenderScene);

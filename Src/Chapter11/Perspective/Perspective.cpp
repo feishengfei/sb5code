@@ -50,8 +50,8 @@ void SetupRC(void)
 
     viewFrame.MoveForward(5.0f);
 
-    perspectiveShader = gltLoadShaderPairWithAttributes("../../Data/Shaders/Chapter11/Perspective.vs",
-                                                        "../../Data/Shaders/Chapter11/Perspective.fs",
+    perspectiveShader = gltLoadShaderPairWithAttributes("../../../Data/Shaders/Chapter11/Perspective.vs",
+                                                        "../../../Data/Shaders/Chapter11/Perspective.fs",
                                                         2,
                                                         GLT_ATTRIBUTE_VERTEX, "vVertex",
                                                         GLT_ATTRIBUTE_TEXTURE0, "vTexCoord");

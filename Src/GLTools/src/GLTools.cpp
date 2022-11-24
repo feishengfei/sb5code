@@ -1057,7 +1057,7 @@ GLbyte* gltReadBMPBits(const char *szFileName, int *nWidth, int *nHeight)
 		{
 		free(pBitmapInfo);
 		fclose(pFile);
-		return false;
+		return NULL;
 		}
 
 	// Save the size and dimensions of the bitmap
@@ -1069,7 +1069,7 @@ GLbyte* gltReadBMPBits(const char *szFileName, int *nWidth, int *nHeight)
 	if(pBitmapInfo->header.bits != 24)
 		{
 		free(pBitmapInfo);
-		return false;
+		return NULL;
 		}
 
 	if(lBitSize == 0)
@@ -1252,7 +1252,7 @@ GLuint gltLoadShaderTripletWithAttributes(const char *szVertexShader,
     if(testVal == GL_FALSE) {
         char infoLog[1024];
         glGetProgramInfoLog(hReturn, 1024, NULL, infoLog);
-        fprintf(stderr, infoLog);
+        fprintf(stderr, "%s\n", infoLog);
         goto failed;
     }
 

@@ -180,16 +180,16 @@ void SetupRC()
 	
 	// Load the Marble
 	glBindTexture(GL_TEXTURE_2D, uiTextures[0]);
-	LoadTGATexture("marble.tga", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_REPEAT);
+	LoadTGATexture("Marble.tga", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_REPEAT);
 	
 	// Load Mars
 	glBindTexture(GL_TEXTURE_2D, uiTextures[1]);
-	LoadTGATexture("marslike.tga", GL_LINEAR_MIPMAP_LINEAR, 
+	LoadTGATexture("Marslike.tga", GL_LINEAR_MIPMAP_LINEAR, 
 				   GL_LINEAR, GL_CLAMP_TO_EDGE);
 	
 	// Load Moon
 	glBindTexture(GL_TEXTURE_2D, uiTextures[2]);
-	LoadTGATexture("moonlike.tga", GL_LINEAR_MIPMAP_LINEAR,
+	LoadTGATexture("MoonLike.tga", GL_LINEAR_MIPMAP_LINEAR,
 				   GL_LINEAR, GL_CLAMP_TO_EDGE);
                    
     // Randomly place the spheres
